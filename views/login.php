@@ -24,7 +24,7 @@
         <a class="link" href="/" style="color: white">Домой</a>
     </div>
     <main class="form-signin w-50 m-auto" style="margin: 0 auto;">
-        <form action="" method="">
+        <form action="/auth/login" method="post">
             <h1 class="h3 mb-3 fw-normal">Введите данные</h1>
 
             <div class="form-floating">

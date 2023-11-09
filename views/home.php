@@ -1,7 +1,7 @@
 <?php
 
 use App\Services\DBW;
-use App\Services\View;
+use App\Services\Views\View;
 
 View::render_header('header', 'Интернет магазин');
 

@@ -2,10 +2,10 @@
 
 namespace App\Controllers\Auth;
 
-use App\Services\DBW;
+use App\Services\Https\Route;
+use App\Services\Database\DBW;
 use App\Services\Helpers\Hash;
-use App\Services\Route;
-use App\Services\Request;
+use App\Services\Https\Request;
 
 class RegisterController
 {

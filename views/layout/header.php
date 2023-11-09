@@ -7,7 +7,7 @@
     <title>
         <?php
 
-        use App\Services\View;
+        use App\Services\Views\View;
 
         echo View::get_title();
         ?>
@@ -56,7 +56,7 @@
                         <li class="nav-item"><a class="nav-link" href="/shop">Магазин</a></li>
                         <?php
 
-                        use App\Services\Guest;
+                        use App\Services\Session\Guest;
 
                         if (Guest::guest()) {
                             echo "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/profile\">Профиль</a></li>";

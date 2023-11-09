@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Database;
 
 use App\Services\Helpers\Helpers;
-use App\Services\Traits\ArrayToQuery;
 
 class DBW
 {
