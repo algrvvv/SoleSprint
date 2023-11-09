@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use App\Services\Helpers\Helpers;
 use App\Services\Traits\ArrayToQuery;
 
@@ -12,6 +13,7 @@ class DBW
     private string $DB_USERNAME = "root";
     private string $DB_PASSWORD = "";
     private $connection;
+    private $query;
 
     public function __construct()
     {
@@ -30,21 +32,33 @@ class DBW
 
     public function get()
     {
-        //code
+        $query = $this->getQuery();
+        if ($sql = $this->connection->query($query)) {
+            $num = $sql->num_rows;
+            if ($num == 1) {
+                return $sql->fetch_assoc();
+            } else {
+                while ($row = $sql->fetch_all(MYSQLI_ASSOC)) {
+                    return $row;
+                }
+            }
+        } else {
+            return "Произошла ошибка при получении данных";
+        }
+
+        $this->connection->close();
     }
 
     /**
-     * @param string $bd_name
      * @param array $select
+     * @param string $bd_name
      */
     public function select(array $select, string $bd_name)
     {
         $select = Helpers::implode_sql($select, "`");
-        if ($sql = $this->connection->query("SELECT $select FROM `$bd_name`")) {
-            return $sql->fetch_assoc();
-        } else {
-            return "Произошла ошибка при получении данных";
-        }
+        $query = "SELECT $select FROM `$bd_name`";
+        $this->setQuery($query);
+        return $this;
     }
 
     /**
@@ -55,7 +69,7 @@ class DBW
     {
         $columns = [];
         $column_values = [];
-        
+
 
         foreach ($values as $key => $value) {
             array_push($columns, $key);
@@ -71,7 +85,7 @@ class DBW
                 "INSERT INTO `$bd_name`($final_col) VALUES($final_val)"
             );
         } catch (\Exception $e) {
-            die("Error: ". $e);
+            die("Error: " . $e);
         }
 
         $this->connection->close();
@@ -87,13 +101,25 @@ class DBW
         //code
     }
 
-    public function where()
+    public function where(string | int $field, string | int $value, string $operator = "=",)
     {
-        //code
+        $sql = $this->query . " WHERE `$field` $operator '$value'";
+        $this->setQuery($sql);
+        return $this;
     }
 
     public function join()
     {
         //code
+    }
+
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    public function setQuery($new_query)
+    {
+        $this->query = $new_query;
     }
 }

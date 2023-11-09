@@ -12,6 +12,14 @@ class RegisterController
     {
         $model = new DBW();
         // $model->insert('users', Request::except(['q', 'password-confirm']));
-        $model->select(['*'], 'users');
+        $check_num = $model->select(['count(*) as count'], 'users')->where('login', 'newlogin')->get();
+        
+        echo "<pre>";
+        print_r($check_num);
+        echo "</pre> <br>";
+        
+        echo "<pre>";
+        print_r($model->getQuery());
+        echo "</pre> <br>";
     }
 }
