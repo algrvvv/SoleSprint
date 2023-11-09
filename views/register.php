@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+session_start();
+use App\Services\Session\Session;
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -28,10 +33,10 @@
             <h1 class="h3 mb-3 fw-normal">Зарегистрируйтесь</h1>
 
             <div class="form-floating">
-                <input name="login" type="password" class="form-control" id="login" placeholder="Login">
+                <input name="login" type="text" class="form-control" id="login" placeholder="Login">
                 <label for="login">Логин</label>
             </div>
-            
+
             <br>
             <div class="form-floating">
                 <input name="email" type="email" class="form-control" id="email" placeholder="name@example.com">
@@ -58,7 +63,14 @@
                 </label>
             </div>
             <button class="btn btn-primary w-100 py-2" type="submit">Зарегистрироваться</button>
-            <p class="mt-5 mb-3 text-body-secondary">
+            <p class="mt-1 mb-3 text-danger">
+                <?php
+                    $s = new Session();
+                    echo $s->get_session('errors');
+                    $s->unset_session('errors');
+                ?>
+            </p>
+            <p class="mt-3 mb-3 text-body-secondary">
                 Уже есть аккаунт? <a class="link" href="/login">Войдите</a>
             </p>
             <p class="mt-5 mb-3 text-body-secondary">© Sole Sprint 2023</p>

@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\View;
+use App\Services\Views\View;
 
 View::render_header('header', 'Страница входа');
 

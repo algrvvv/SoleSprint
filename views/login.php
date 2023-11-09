@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+session_start();
+use App\Services\Session\Session;
+
+?>
 
 <head>
     <meta charset="UTF-8">
@@ -12,7 +18,7 @@
 </head>
 
 <style>
-    .btn-back{
+    .btn-back {
         background-color: #adb5bd;
         padding: 12px;
         border-radius: 50% 12px 12px 50%;
@@ -44,7 +50,15 @@
                 </label>
             </div>
             <button class="btn btn-primary w-100 py-2" type="submit">Войти</button>
-            <p class="mt-5 mb-3 text-body-secondary">
+            <p class="mt-1 mb-3 text-danger">
+                <?php
+                    $s = new Session();
+                    echo $s->get_session('errors');
+                    $s->unset_session('errors');
+                ?>
+            </p>
+            
+            <p class="mt-3 mb-3 text-body-secondary">
                 Еще нет аккаунта? <a class="link" href="/register">Зарегистрируйся</a>
             </p>
             <p class="mt-5 mb-3 text-body-secondary">© Sole Sprint 2023</p>

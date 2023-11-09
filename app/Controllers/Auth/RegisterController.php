@@ -6,41 +6,48 @@ use App\Services\Https\Route;
 use App\Services\Database\DBW;
 use App\Services\Helpers\Hash;
 use App\Services\Https\Request;
+use App\Services\Session\Session;
+use App\Services\Validators\Validator;
 
 class RegisterController
 {
     public function register()
     {
+        $s = new Session();
         $model = new DBW();
+        $valid = new Validator();
         $login = Request::query('login');
         $email = Request::query('email');
         $password = Request::query('password');
         $password_confirm = Request::query('password-confirm');
 
-        $uniq_log = $model->select(['count(*) as count'], 'users')->where('login', "$login")->get();
-        $uniq_email = $model->select(['count(*) as count'], 'users')->where('email', "$email")->get();
+        if ($valid->check_empty_value(Request::all())) {
+            if ($valid->check_unique_db(Request::only(['login', 'email']), 'users')) {
+                if ($password === $password_confirm) {
+                    $password = Hash::make($password);
+                    try {
+                        $attrs = [
+                            "login" => $login,
+                            "email" => $email,
+                            "password" => $password
+                        ];
 
-        if ($uniq_log['count'] > 0) {
-            echo "Пользователей с таким логином уже есть";
-        } else if ($uniq_email['count'] > 0) {
-            echo "Пользователей с такой почтой уже есть";
-        } else {
-            if ($password === $password_confirm) {
-                $password = Hash::make($password);
-                try {
-                    $attrs = [
-                        "login" => $login,
-                        "email"=> $email,
-                        "password"=> $password
-                    ];
-                    $model->insert('users', $attrs);
-                    Route::redirect('/login');
-                } catch (\Exception $e) {
-                    echo $e->getMessage();
+                        $model->insert('users', $attrs);
+                        Route::redirect('/login');
+                    } catch (\Exception $e) {
+                        echo '' . $e->getMessage() . '';
+                    }
+                } else {
+                    $s->create_session('errors', "Пароли не совпадают");
+                    Route::redirect('/register');
                 }
             } else {
-                echo "пароли разные";
+                $s->create_session('errors', $valid->getErrrorMessage());
+                Route::redirect('/register');
             }
+        } else {
+            $s->create_session('errors', $valid->getErrrorMessage());
+            Route::redirect('/register');
         }
     }
 }

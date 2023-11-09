@@ -6,19 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         <?php
+        session_start();
 
         use App\Services\Views\View;
 
         echo View::get_title();
         ?>
     </title>
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"> -->
     <link rel="stylesheet" href="https://getbootstrap.com/docs/5.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/style/main.css">
     <link rel="shortcut icon" href="uploads/favicon.png" type="image/x-icon">
-
-
 </head>
 
 <body>
@@ -60,7 +58,13 @@
 
                         if (Guest::guest()) {
                             echo "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/profile\">Профиль</a></li>";
-                            echo "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/logout\">Выйти</a></li>";
+                            echo "
+                            <li class=\"nav-item\">
+                                <form action=\"/auth/logout\" method=\"post\">
+                                <button type=\"submit\" class=\"nav-link\">Выйти</button>
+                                </form>
+                            </li>
+                            ";
                         } else {
                             echo "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/login\">Войти</a></li>";
                         }
