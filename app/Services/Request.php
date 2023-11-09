@@ -6,7 +6,8 @@ class Request
 {
     public static function query($key): string
     {
-        return $_REQUEST[$key];
+
+        return $_REQUEST[$key] ?? null;
     }
 
     public static function all(): array

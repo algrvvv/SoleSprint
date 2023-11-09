@@ -30,23 +30,38 @@ class DBW
         }
     }
 
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    public function setQuery($new_query)
+    {
+        $this->query = $new_query;
+    }
+
     public function get()
     {
-        $query = $this->getQuery();
-        if ($sql = $this->connection->query($query)) {
-            $num = $sql->num_rows;
-            if ($num == 1) {
-                return $sql->fetch_assoc();
-            } else {
-                while ($row = $sql->fetch_all(MYSQLI_ASSOC)) {
-                    return $row;
+        try {
+            $query = $this->getQuery();
+            if ($sql = $this->connection->query($query)) {
+                $num = $sql->num_rows;
+                if ($num == 1) {
+                    return $sql->fetch_assoc();
+                } else {
+                    while ($row = $sql->fetch_all(MYSQLI_ASSOC)) {
+                        return $row;
+                    }
                 }
+            } else {
+                //сделать потом через сессии
+                return "Произошла ошибка при получении данных"; 
             }
-        } else {
-            return "Произошла ошибка при получении данных";
-        }
 
-        $this->connection->close();
+            $this->connection->close();
+        } catch (\Exception $e) {
+            die("Errors: " . $e);
+        }
     }
 
     /**
@@ -62,8 +77,20 @@ class DBW
     }
 
     /**
+     * @param string | int $field
+     * @param string | int $value
+     * @param string $operator
+     */
+    public function where(string | int $field, string | int $value, string $operator = "=",)
+    {
+        $sql = $this->query . " WHERE `$field` $operator '$value'";
+        $this->setQuery($sql);
+        return $this;
+    }
+
+    /**
      * @param string $bd_name
-     * @param array $values
+     * @param array $values -> принимает ассоциативный массив
      */
     public function insert(string $bd_name, array $values)
     {
@@ -76,9 +103,9 @@ class DBW
             array_push($column_values, $value);
         }
 
-        $final_col = Helpers::implode_sql($columns);
+        $final_col = Helpers::implode_sql($columns, "`");
 
-        $final_val = Helpers::implode_sql($column_values);
+        $final_val = Helpers::implode_sql($column_values, "'");
 
         try {
             $this->connection->query(
@@ -101,25 +128,8 @@ class DBW
         //code
     }
 
-    public function where(string | int $field, string | int $value, string $operator = "=",)
-    {
-        $sql = $this->query . " WHERE `$field` $operator '$value'";
-        $this->setQuery($sql);
-        return $this;
-    }
-
     public function join()
     {
         //code
-    }
-
-    public function getQuery()
-    {
-        return $this->query;
-    }
-
-    public function setQuery($new_query)
-    {
-        $this->query = $new_query;
     }
 }

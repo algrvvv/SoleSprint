@@ -57,9 +57,9 @@
                     Запомнить меня
                 </label>
             </div>
-            <button class="btn btn-primary w-100 py-2" type="submit">Войти</button>
+            <button class="btn btn-primary w-100 py-2" type="submit">Зарегистрироваться</button>
             <p class="mt-5 mb-3 text-body-secondary">
-                Еще нет аккаунта? <a class="link" href="/register">Зарегистрируйся</a>
+                Уже есть аккаунт? <a class="link" href="/login">Войдите</a>
             </p>
             <p class="mt-5 mb-3 text-body-secondary">© Sole Sprint 2023</p>
         </form>
