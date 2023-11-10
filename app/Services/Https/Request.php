@@ -6,8 +6,11 @@ class Request
 {
     public static function query($key): string
     {
-
-        return $_REQUEST[$key] ?? null;
+        if(isset($_REQUEST[$key])){
+            return $_REQUEST[$key];
+        } else {
+            return "none";
+        }
     }
 
     public static function all(): array

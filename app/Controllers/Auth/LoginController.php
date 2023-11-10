@@ -28,8 +28,8 @@ class LoginController
 
             $auth = new Auth();
             if ($auth->attempt($attrs, 'users')) {
-                $sess = new UserSession();
-                $sess->create_session($auth->getUser());
+                $user_sess = new UserSession();
+                $user_sess->create_session($auth->getUser());
                 Route::redirect('/');
             } else {
                 $s->create_session('errors', $auth->getMessage());

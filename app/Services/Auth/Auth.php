@@ -44,7 +44,16 @@ class Auth
             $user_data = $db->select(['*'], $db_name)->where('email', $credentials['email'])->get();
             $correct_password = $data['password'];
             if ($credentials['password'] === $correct_password) {
-                $this->setUser($user_data);
+                $user_datas = [
+                    'id' => $user_data['id'],
+                    'login' => $user_data['login'],
+                    'email'=> $user_data['email'],
+                    'orders_id' => $user_data['orders_id'],
+                    'favorites' => $user_data['favorites'],
+                    'dop_id' => $user_data['dop_id'],
+                    'role' => $user_data['role']
+                ];
+                $this->setUser($user_datas);
                 return true;
             } else {
                 $this->setMessage('Введен неправльный пароль');

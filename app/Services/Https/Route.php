@@ -2,10 +2,19 @@
 
 namespace App\Services\Https;
 
+use App\Services\Middleware\Kernel;
 use RegisterInterface;
 
 class Route
 {
+    private static function getRouteId()
+    {
+        if (empty(self::$routes)) {
+            return 1;
+        } else {
+            return count(self::$routes) + 1;
+        }
+    }
     public static $routes; // все достпуные роуты
     /**
      * @param string $url -> страница
@@ -13,11 +22,15 @@ class Route
      */
     public static function get($url, $views)
     {
+
         self::$routes[] = [
+            "id" => self::getRouteId(),
             "url"    => $url,
             "view"  => $views,
-            "method" => "GET"
+            "method" => "GET",
         ];
+
+        return new static;
     }
 
     /**
@@ -28,11 +41,14 @@ class Route
     public static function post(string $url, $class, string $function)
     {
         self::$routes[] = [
+            "id" => self::getRouteId(),
             "url" => $url,
             "class" => $class,
             "function" => $function,
-            "method" => "POST"
+            "method" => "POST",
         ];
+
+        return new static;
     }
 
     /**
@@ -56,6 +72,21 @@ class Route
         }
 
         self::get_error_page(404);
+    }
+
+    /**
+     * @param array $middlewares
+     */
+    public static function middleware(array $middlewares)
+    {
+        foreach ($middlewares as $url => $middleware) {
+            foreach (self::$routes as $route) {
+                if ($route['url'] == $url) {
+                    $ker = new Kernel();
+                    $ker->getMiddlewares($route['url'], $middleware);  
+                }
+            }
+        }
     }
 
     /**

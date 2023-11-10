@@ -17,7 +17,11 @@ class UserSession
     public function get_session()
     {
         session_start();
-        return $_SESSION['user'];
+        if(isset($_SESSION['user'])){
+            return $_SESSION['user'];
+        } else {
+            return null;
+        }
     }
 
     public function delete_session()
