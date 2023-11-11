@@ -1,10 +1,13 @@
 <?php
+
+session_start();
+
+use App\Services\Session\UserSession;
+use App\Services\Database\DBW;
+
 /**
  * проверка сессии
  */
-session_start();
-use App\Services\Session\UserSession;
-
 $s = new UserSession();
 
 echo "<pre>";
@@ -14,4 +17,3 @@ echo "</pre>";
 ?>
 
 <h1>404</h1>
-

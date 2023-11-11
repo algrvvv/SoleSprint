@@ -54,7 +54,7 @@ class DBW
                 }
             } else {
                 //сделать потом через сессии
-                return "Произошла ошибка при получении данных"; 
+                return "Произошла ошибка при получении данных";
             }
 
             $this->connection->close();
@@ -76,15 +76,27 @@ class DBW
     }
 
     /**
-     * @param string | int $field
+     * @param string $field
      * @param string | int $value
      * @param string $operator
      */
-    public function where(string | int $field, string | int $value, string $operator = "=",)
+    public function where(string $field, string | int $value, string $operator = "=",)
     {
-        $sql = $this->query . " WHERE `$field` $operator '$value'";
-        $this->setQuery($sql);
-        return $this;
+        /**
+         * С следующих обновлениях данная функция получит обновление функционала
+         */
+        if ($field != '' && $value != '') {
+            if (str_contains($field, '.')) {
+                $field = "`" . explode('.', $field)[0] . "`.`" . explode('.', $field)[1] . "` ";
+            } else {
+                $field = "`$field`";
+            }
+            $sql = $this->query . " WHERE $field $operator '$value'";
+            $this->setQuery($sql);
+            return $this;
+        } else {
+            echo "Недопустимые данные";
+        }
     }
 
     /**
@@ -117,18 +129,94 @@ class DBW
         $this->connection->close();
     }
 
-    public function delete()
+    /**
+     * @param array $condition
+     * @param string $db_name
+     */
+    public function delete(array $condition, string $db_name)
     {
-        //code
+        $query = "DELETE FROM `$db_name` WHERE ";
+        $cond_amount = 1;
+        if (isset($condition) && $db_name != '') {
+            foreach ($condition as $key => $value) {
+                if ($cond_amount > 1) {
+                    $query .= " AND `$key` = '$value'";
+                    $cond_amount++;
+                } else {
+                    $query .= "`$key` = '$value'";
+                    $cond_amount++;
+                }
+            }
+            try {
+                $this->connection->query($query);
+                return $this;
+            } catch (\Exception $e) {
+                die("Error: " . $e);
+            }
+        } else {
+            echo "Данные пустые";
+        }
     }
 
-    public function update()
+    /**
+     * @param array $values
+     * @param array $condition
+     * @param string $db_name
+     */
+    public function update(array $values, array $condition, string $db_name)
     {
-        //code
+        if (isset($condition) && $db_name != "" && isset($values)) {
+            $query = "UPDATE `$db_name` SET ";
+            $cond_amount = 1;
+            $value_amount = 1;
+            foreach ($values as $key => $value) {
+                if ($value_amount > 1) {
+                    $query .= ", `$key` = '$value'";
+                    $value_amount++;
+                } else {
+                    $query .= "`$key` = '$value'";
+                    $value_amount++;
+                }
+            }
+
+            foreach ($condition as $key => $value) {
+                if ($cond_amount > 1) {
+                    $query .= " AND `$key` = '$value'";
+                    $cond_amount++;
+                } else {
+                    $query .= " WHERE `$key` = '$value'";
+                    $cond_amount++;
+                }
+            }
+
+            try {
+                $this->connection->query($query);
+            } catch (\Exception $e) {
+                die("Error: " . $e);
+            }
+        } else {
+            echo "недопустимые данные";
+        }
     }
 
-    public function join()
+    /**
+     * @param array $condition
+     * @param string $db_name
+     */
+    public function join(array $condition, string $db_name)
     {
-        //code
+        if (isset($condition) && $db_name != "") {
+            $query = " INNER JOIN `$db_name` ON";
+            foreach ($condition as $key => $value) {
+                $corr_key = explode('.', $key);
+                $corr_val = explode('.', $value);
+                $query .= " `" . $corr_key[0] . "`.`" . $corr_key[1] . "` = `" . $corr_val[0] . "`.`" . $corr_val[1] . "` ";
+            }
+            $query = $this->getQuery() . $query;
+            $this->setQuery($query);
+            return $this;
+        } else {
+            echo "Недопустимые данные";
+        }
     }
 }
