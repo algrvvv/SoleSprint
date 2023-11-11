@@ -7,8 +7,11 @@
     <title>
         <?php
         session_start();
-
+        
         use App\Services\Views\View;
+        use App\Services\Session\UserSession;
+        
+        $user_s = new UserSession();
 
         echo View::get_title();
         ?>
@@ -56,19 +59,23 @@
 
                         use App\Services\Session\Guest;
 
-                        if (Guest::guest()) {
-                            echo "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/profile\">Профиль</a></li>";
-                            echo "
-                            <li class=\"nav-item\">
-                                <form action=\"/auth/logout\" method=\"post\">
-                                <button type=\"submit\" class=\"nav-link\">Выйти</button>
-                                </form>
-                            </li>
-                            ";
-                        } else {
-                            echo "<li class=\"nav-item\"><a class=\"nav-link\" href=\"/login\">Войти</a></li>";
-                        }
+                        if (Guest::guest()) :
                         ?>
+                            <li class="nav-item"><a class="nav-link" href="/login">Войти</a></li>
+                        <?php
+                        endif;
+                        if (!Guest::guest()) :
+                        ?>
+                            <li class="nav-item"><a class="nav-link" 
+                                href=<?php echo '/profile/' . $user_s->get_session()['id'] ?> >Профиль</a>
+                            </li>
+                            <li class="nav-item">
+                                <form action="/auth/logout" method="post"><button type="submit" class="nav-link">Выйти</button></form>
+                            </li>
+                        <?php
+                        endif;
+                        ?>
+
                         <li class="nav-item"><a class="nav-link" href="#">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
                                     <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />

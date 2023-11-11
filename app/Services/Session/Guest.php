@@ -10,9 +10,9 @@ class Guest
         $sess = $_SESSION['user'] ?? null;
 
         if (isset($sess)) {
-            return true;
-        } else {
             return false;
+        } else {
+            return true;
         }
     }
 }

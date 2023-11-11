@@ -3,6 +3,7 @@
 use App\Services\Https\Route;
 use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\RegisterController;
+use App\Controllers\ProfileController;
 
 // $route = new Route();
 
@@ -22,6 +23,9 @@ use App\Controllers\Auth\RegisterController;
 Route::get('/', 'home');
 Route::get('/shop', 'shop');
 Route::get('/dashboard', 'pages/dashboard');
+Route::get('/profile/{id}', 'pages/profile');
+// Route::get('/profile/{id}', 'pages/profile', [ProfileController::class, 'index']); 
+// возможно пригодиться это, пока удалять не буду
 
 Route::get('/login', 'login');
 Route::get('/register', 'register');
@@ -32,9 +36,9 @@ Route::post('/auth/logout', LoginController::class, 'logout');
 
 
 Route::middleware([
-    '/dashboard' => 'auth',
     '/login' => 'guest',
-    '/register' => 'guest'
+    '/register' => 'guest',
+    '/dashboard' => 'admin'
 ]);
 
 Route::fallback();

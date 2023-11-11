@@ -12,6 +12,14 @@ class Kernel
         "guest" => [
             GuestMiddleware::class,
             "handler"
+        ],
+        "admin" => [
+            AdminMiddleware::class,
+            'handler'
+        ],
+        "owner" => [
+            OwnerMiddleware::class,
+            "handler"
         ]
     ];
 

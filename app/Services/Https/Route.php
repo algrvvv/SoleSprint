@@ -19,16 +19,31 @@ class Route
     /**
      * @param string $url -> страница
      * @param string $views -> название файла с рендерингом
+     * @param array $controller
      */
-    public static function get($url, $views)
+    public static function get($url, $views, array $controller = [])
     {
+        $d_url = new DynamicUrl();
+        $new_url = $d_url->check_url($url);
+        $class = "none";
+        $func = "none";
+        if (count($controller) > 1) {
+            $class = $controller[0];
+            $func = $controller[1];
+        }
 
         self::$routes[] = [
-            "id" => self::getRouteId(),
-            "url"    => $url,
-            "view"  => $views,
+            "id"     => self::getRouteId(),
+            "url"    => $new_url,
+            "view"   => $views,
             "method" => "GET",
+            "class"  => $class,
+            "func"   => $func,
         ];
+
+        // echo "<pre>";
+        // print_r(self::$routes);
+        // echo "</pre>";
 
         return new static;
     }
@@ -65,8 +80,15 @@ class Route
                     $class->$function();
                     die();
                 } else {
-                    require_once 'views/' . $route['view'] . '.php';
-                    die();
+                    if ($route['class'] == "none") {
+                        require_once 'views/' . $route['view'] . '.php';
+                        die();
+                    } else {
+                        $class = new $route['class']();
+                        $function = $route['func'];
+                        $class->$function();
+                        die();
+                    }
                 }
             }
         }
@@ -83,7 +105,7 @@ class Route
             foreach (self::$routes as $route) {
                 if ($route['url'] == $url) {
                     $ker = new Kernel();
-                    $ker->getMiddlewares($route['url'], $middleware);  
+                    $ker->getMiddlewares($route['url'], $middleware);
                 }
             }
         }
