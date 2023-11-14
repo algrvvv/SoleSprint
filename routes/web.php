@@ -1,31 +1,22 @@
 <?php
 
+use App\Controllers\Action\AppsController;
+use App\Controllers\Action\SellerController;
 use App\Services\Https\Route;
 use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\RegisterController;
 use App\Controllers\ProfileController;
 
-// $route = new Route();
-
-// $route->get('/', 'home');
-// $route->get('/shop', 'shop');
-// $route->get('/login', 'login');
-// $route->get('/register', 'register');
-// $route->get('/dashboard', 'pages/dashboard')->middleware(['auth']);
-
-
-// $route->post('/auth/register', RegisterController::class, 'register');
-// $route->post('/auth/login', LoginController::class, 'login');
-// $route->post('/auth/logout', LoginController::class, 'logout');
-
-// $route->fallback();
-
 Route::get('/', 'home');
 Route::get('/shop', 'shop');
-Route::get('/dashboard', 'pages/dashboard');
-Route::get('/profile/{id}', 'pages/profile');
-// Route::get('/profile/{id}', 'pages/profile', [ProfileController::class, 'index']); 
-// возможно пригодиться это, пока удалять не буду
+// Админка
+Route::get('/dashboard', 'pages/dashboard', [AppsController::class, 'index']);
+Route::post('/dashboard/accept/{id}', AppsController::class, 'accept');
+Route::post('/dashboard/reject/{id}', AppsController::class, 'reject');
+// Админка
+Route::get('/profile/{id}', 'pages/profile', [ProfileController::class, 'index']);
+Route::get('/applications', 'pages/apps', [AppsController::class, 'show']);
+Route::get('/getseller', 'pages/seller');
 
 Route::get('/login', 'login');
 Route::get('/register', 'register');
@@ -33,12 +24,15 @@ Route::get('/register', 'register');
 Route::post('/auth/register', RegisterController::class, 'register');
 Route::post('/auth/login', LoginController::class, 'login');
 Route::post('/auth/logout', LoginController::class, 'logout');
+Route::post('/add/seller', SellerController::class, 'store');
 
 
 Route::middleware([
     '/login' => 'guest',
     '/register' => 'guest',
-    '/dashboard' => 'admin'
+    '/dashboard' => 'admin',
+    '/getseller' => 'auth',
+    '/applications' => 'auth',
 ]);
 
 Route::fallback();

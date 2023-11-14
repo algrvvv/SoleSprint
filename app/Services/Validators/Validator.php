@@ -4,8 +4,6 @@ namespace App\Services\Validators;
 
 use App\Services\Database\DBW;
 
-
-
 class Validator
 {
     private $error_message;
@@ -27,8 +25,8 @@ class Validator
     {
         $bd = new DBW();
         foreach ($data as $key => $value) {
-            $count = $bd->select(['count(*) as count'], 'users')->where("$key", "$value")->get();
-            if($count['count'] > 0){
+            $count = $bd->select(['count(*) as count'], $db_name)->where("$key", "$value")->get();
+            if ($count['count'] > 0) {
                 $this->setErrrorMessage("Поле $key уже занято");
                 return false;
             }

@@ -11,6 +11,11 @@ class Auth
     private $message;
     private $user;
 
+    public function __construct()
+    {
+        session_start();
+    }
+
     public function getMessage()
     {
         return $this->message;
@@ -47,7 +52,7 @@ class Auth
                 $user_datas = [
                     'id' => $user_data['id'],
                     'login' => $user_data['login'],
-                    'email'=> $user_data['email'],
+                    'email' => $user_data['email'],
                     'orders_id' => $user_data['orders_id'],
                     'favorites' => $user_data['favorites'],
                     'dop_id' => $user_data['dop_id'],
@@ -62,6 +67,27 @@ class Auth
         } else {
             $this->setMessage('Пользователя не найдено. Проверьте данные входа');
             return false;
+        }
+    }
+
+    public function login()
+    {
+        $_SESSION['user'] = $this->getUser();
+    }
+
+    public function logout()
+    {
+        if (isset($_SESSION['user'])) {
+            unset($_SESSION['user']);
+        }
+    }
+
+    public function user()
+    {
+        if (isset($_SESSION['user'])) {
+            return $_SESSION['user'];
+        } else {
+            return null;
         }
     }
 }

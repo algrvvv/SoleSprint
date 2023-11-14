@@ -126,7 +126,8 @@ class DBW
             die("Error: " . $e);
         }
 
-        $this->connection->close();
+        $last_id = mysqli_insert_id($this->connection);
+        return $last_id;
     }
 
     /**

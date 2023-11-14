@@ -3,20 +3,16 @@
 namespace App\Controllers\Auth;
 
 use App\Services\Auth\Auth;
-use App\Services\Database\DBW;
 use App\Services\Helpers\Hash;
 use App\Services\Https\Request;
 use App\Services\Https\Route;
 use App\Services\Session\Session;
-use App\Services\Session\UserSession;
 
 class LoginController
 {
     public function login()
     {
-        session_start();
         $s = new Session();
-        $model = new DBW();
         $email = Request::query("email");
         $password = Request::query("password");
 
@@ -28,8 +24,7 @@ class LoginController
 
             $auth = new Auth();
             if ($auth->attempt($attrs, 'users')) {
-                $user_sess = new UserSession();
-                $user_sess->create_session($auth->getUser());
+                $auth->login();
                 Route::redirect('/');
             } else {
                 $s->create_session('errors', $auth->getMessage());
@@ -43,8 +38,8 @@ class LoginController
 
     public function logout()
     {
-        session_start();
-        unset($_SESSION['user']);
+        $auth = new Auth();
+        $auth->logout();
         Route::redirect('/');
     }
 }

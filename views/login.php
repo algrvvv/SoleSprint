@@ -2,7 +2,7 @@
 <html lang="en">
 <?php
 
-session_start();
+use App\Services\Views\View;
 use App\Services\Session\Session;
 
 ?>
@@ -10,7 +10,9 @@ use App\Services\Session\Session;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход</title>
+    <title>
+        Вход
+    </title>
     <link rel="stylesheet" href="assets/style/main.css">
     <link rel="stylesheet" href="https://getbootstrap.com/docs/5.3/dist/css/bootstrap.min.css">
     <link rel="shortcut icon" href="uploads/favicon.png" type="image/x-icon">
@@ -52,12 +54,12 @@ use App\Services\Session\Session;
             <button class="btn btn-primary w-100 py-2" type="submit">Войти</button>
             <p class="mt-1 mb-3 text-danger">
                 <?php
-                    $s = new Session();
-                    echo $s->get_session('errors');
-                    $s->unset_session('errors');
+                $s = new Session();
+                echo $s->get_session('errors');
+                $s->unset_session('errors');
                 ?>
             </p>
-            
+
             <p class="mt-3 mb-3 text-body-secondary">
                 Еще нет аккаунта? <a class="link" href="/register">Зарегистрируйся</a>
             </p>

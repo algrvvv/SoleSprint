@@ -3,6 +3,7 @@
 namespace App\Services\Https;
 
 use App\Services\Middleware\Kernel;
+use App\Services\Views\View;
 use RegisterInterface;
 
 class Route
@@ -34,7 +35,8 @@ class Route
 
         self::$routes[] = [
             "id"     => self::getRouteId(),
-            "url"    => $new_url,
+            "url"    => $new_url->getUrl(),
+            "dyn_part" => $new_url->getDyn() ?? null,
             "view"   => $views,
             "method" => "GET",
             "class"  => $class,
@@ -55,9 +57,12 @@ class Route
      */
     public static function post(string $url, $class, string $function)
     {
+        $d_url = new DynamicUrl();
+        $new_url = $d_url->check_url($url);
         self::$routes[] = [
             "id" => self::getRouteId(),
-            "url" => $url,
+            "url"    => $new_url->getUrl(),
+            "dyn_part" => $new_url->getDyn() ?? null,
             "class" => $class,
             "function" => $function,
             "method" => "POST",
@@ -75,18 +80,25 @@ class Route
         foreach (self::$routes as $route) {
             if ($route['url'] == '/' . $query) {
                 if ($route['method'] == 'POST') {
-                    $class = new $route['class'];
-                    $function = $route['function'];
-                    $class->$function();
-                    die();
+                    if ($route['dyn_part'] != '') {
+                        $class = new $route['class'];
+                        $function = $route['function'];
+                        $class->$function($route['dyn_part']);
+                        die();
+                    } else {
+                        $class = new $route['class'];
+                        $function = $route['function'];
+                        $class->$function();
+                        die();
+                    }
                 } else {
                     if ($route['class'] == "none") {
-                        require_once 'views/' . $route['view'] . '.php';
+                        View::render($route['view']);
                         die();
                     } else {
                         $class = new $route['class']();
                         $function = $route['func'];
-                        $class->$function();
+                        $class->$function($route['dyn_part'], $route['view']);
                         die();
                     }
                 }

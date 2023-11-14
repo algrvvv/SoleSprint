@@ -4,13 +4,15 @@ namespace App\Services\Session;
 
 class Session
 {
+    public function __construct(){
+        session_start();
+    }
     /**
      * @param string $name
      * @param array | string $value
      */
     public function create_session(string $name, array | string $value)
     {
-        session_start();
         $_SESSION[$name] = $value;
     }
 

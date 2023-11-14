@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bootstrap 5 Simple Admin Dashboard</title>
+    <title>Admin Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <style>
@@ -52,7 +52,7 @@
     <nav class="navbar navbar-light bg-light p-3">
         <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
             <a class="navbar-brand" href="#">
-                Simple Dashboard
+                Admin Dashboard
             </a>
             <button class="navbar-toggler d-md-none collapsed mb-3" type="button" data-toggle="collapse" data-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -134,53 +134,81 @@
                 <h1 class="h2">Все заявки</h1>
                 <p>Здесь будут отображаться все заявки пользователей</p>
                 <div class="row my-4">
-                    <!-- шаблон заявки -->
-                    <div class="col-12 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                        <div class="card">
-                            <h5 class="card-header">Customers</h5>
-                            <div class="card-body">
-                                <h5 class="card-title">345k</h5>
-                                <p class="card-text">Feb 1 - Apr 1, United States</p>
-                                <p class="card-text text-success">18.2% increase since last month</p>
-                            </div>
-                        </div>
-                    </div>
+                    <?php
+
+                    use App\Services\Session\Session;
+
+                    $s = new Session();
+                    $data = $s->get_session('data');
+                    foreach ($data as $value) {
+                        if ($value['status'] == 'unverified') {
+                    ?>
+                                <!-- шаблон заявки -->
+                                <div class="col-12 col-md-6 col-lg-3 mb-4 mb-lg-0">
+                                    <div class="card">
+                                        <h5 class="card-header">Продавец</h5>
+                                        <div class="card-body">
+                                            <h5 class="card-title"><?= $value['name'] ?></h5>
+                                            <p class="card-text"><?= $value['phone'] ?></p>
+                                            <p class="card-text text-danger m-0 m-auto"><?= $value['status'] ?></p>
+                                            <div class="d-flex mt-2">
+                                                <form action="/dashboard/reject/<?= $value['id'] ?>" method="post">
+                                                    <button class="btn btn-danger mr-2" type="submit">Отклонить</button>
+                                                </form>
+                                                <form action="/dashboard/accept/<?= $value['id'] ?>" method="post">
+                                                    <button class="btn btn-success" type="submit">Одобрить</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    <?php
+                        }
+                    }
+                    ?>
                     <!-- шаблон заявки -->
                 </div>
                 <div class="row">
                     <div class="col-12 col-xl-8 mb-4 mb-lg-0 w-100">
                         <div class="card">
-                            <h5 class="card-header">Latest transactions</h5>
+                            <h5 class="card-header">Все продавцы</h5>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                                <th scope="col">Order</th>
-                                                <th scope="col">Product</th>
-                                                <th scope="col">Customer</th>
-                                                <th scope="col">Total</th>
-                                                <th scope="col">Date</th>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Phone</th>
+                                                <th scope="col">Rating</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">17371705</th>
-                                                <td>Volt Premium Bootstrap 5 Dashboard</td>
-                                                <td>johndoe@gmail.com</td>
-                                                <td>€61.11</td>
-                                                <td>Aug 31 2020</td>
-                                                <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
-                                            </tr>
+                                            <?php
+                                            foreach ($data as $value) {
+                                            ?>
+                                                <tr>
+                                                    <th scope="row"><?= $value['id'] ?></th>
+                                                    <td><?= $value['name'] ?></td>
+                                                    <td><?= $value['phone'] ?></td>
+                                                    <td><?= $value['rating'] ?></td>
+                                                    <td><?= $value['status'] ?></td>
+                                                    <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
+                                                </tr>
+                                            <?php
+                                            }
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>
-                                <a href="#" class="btn btn-block btn-light">View all</a>
                             </div>
                         </div>
                     </div>
                 </div>
+
+
                 <footer class="pt-5 d-flex justify-content-between">
                     <span>Copyright © 2019-2020 <a href="https://themesberg.com">Themesberg</a></span>
                     <ul class="nav m-0">
