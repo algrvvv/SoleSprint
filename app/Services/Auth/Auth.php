@@ -75,6 +75,16 @@ class Auth
         $_SESSION['user'] = $this->getUser();
     }
 
+    public function relogin()
+    {
+        $db = new DBW();
+        $old_session = $this->user();
+        $uid = $old_session['id'];
+        $reset = $db->select(['*'], 'users')->where('id',$uid)->get();
+        $this->setUser($reset);
+        $this->login();
+    }
+
     public function logout()
     {
         if (isset($_SESSION['user'])) {

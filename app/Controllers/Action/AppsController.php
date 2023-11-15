@@ -22,6 +22,7 @@ class AppsController
     {
         $db = new DBW();
         $auth = new Auth();
+        $auth->relogin();
         $uid = $auth->user()['dop_id'] ?? null;
         if ($uid != null) {
             $data = $db->select(['*'], 'owners')->where('id', $uid)->get();
@@ -37,6 +38,8 @@ class AppsController
         $db = new DBW();
         if (!$valid->check_unique_db(["id" => $id], 'owners')) {
             $db->update(['status' => 'verified'], ['id' => $id], 'owners');
+            $uid = $db->select(['id'], 'users')->where('dop_id', $id)->get();
+            $db->update(['role' => 'owner'], ['id' => $uid['id']], 'users');
             Route::redirect('/dashboard');
         } else {
             Route::redirect('/dashboard');

@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\Action\AppsController;
+use App\Controllers\Action\ProductController;
 use App\Controllers\Action\SellerController;
 use App\Services\Https\Route;
 use App\Controllers\Auth\LoginController;
@@ -17,6 +18,10 @@ Route::post('/dashboard/reject/{id}', AppsController::class, 'reject');
 Route::get('/profile/{id}', 'pages/profile', [ProfileController::class, 'index']);
 Route::get('/applications', 'pages/apps', [AppsController::class, 'show']);
 Route::get('/getseller', 'pages/seller');
+// Работа с товарами
+Route::get('/create/product', '/pages/products/create');
+Route::post('/action/create/product', ProductController::class, 'store');
+// Работа с товарами
 
 Route::get('/login', 'login');
 Route::get('/register', 'register');
@@ -33,6 +38,7 @@ Route::middleware([
     '/dashboard' => 'admin',
     '/getseller' => 'auth',
     '/applications' => 'auth',
+    '/create/product' => 'owner'
 ]);
 
 Route::fallback();

@@ -25,15 +25,32 @@ $owner_data = $s->get_session('values')['owner_data'] ?? null;
                         $auth = new Auth();
                         $user_id = $auth->user()['id'] ?? null;
                         if ($profile_data['id'] == $user_id) {
+                            if (isset($owner_data)) {
+                                if ($owner_data['status'] == 'verified') {
                         ?>
-                            <div class="d-flex justify-content-center mb-2">
-                                <a href="/applications" type="button" class="btn btn-primary">Мои заявки</a>
-                                <a href="/getseller" type="button" class="btn btn-outline-primary ms-1">Стать продавцом</a>
-                            </div>
+                                    <div class="d-flex justify-content-center mb-2">
+                                        <a href="#" type="button" class="btn btn-primary">Мои товары</a>
+                                        <a href="/create/product" type="button" class="btn btn-outline-primary ms-1">Добавить товар</a>
+                                    </div>
+                                <?php
+                                } else {
+                                ?>
+                                    <div class="d-flex justify-content-center mb-2">
+                                        <a href="/applications" type="button" class="btn btn-primary">Мои заявки</a>
+                                        <a href="/getseller" type="button" class="btn btn-outline-primary ms-1">Стать продавцом</a>
+                                    </div>
+                                <?php
+                                }
+                            } else {
+                                ?>
+                                <div class="d-flex justify-content-center mb-2">
+                                    <a href="/applications" type="button" class="btn btn-primary">Мои заявки</a>
+                                    <a href="/getseller" type="button" class="btn btn-outline-primary ms-1">Стать продавцом</a>
+                                </div>
                         <?php
+                            }
                         }
                         ?>
-
                     </div>
                 </div>
 
