@@ -3,13 +3,14 @@
 use App\Controllers\Action\AppsController;
 use App\Controllers\Action\ProductController;
 use App\Controllers\Action\SellerController;
+use App\Controllers\Action\ShopController;
 use App\Services\Https\Route;
 use App\Controllers\Auth\LoginController;
 use App\Controllers\Auth\RegisterController;
 use App\Controllers\ProfileController;
 
 Route::get('/', 'home');
-Route::get('/shop', 'shop');
+Route::get('/shop', 'shop', [ShopController::class, 'index']);
 // Админка
 Route::get('/dashboard', 'pages/dashboard', [AppsController::class, 'index']);
 Route::post('/dashboard/accept/{id}', AppsController::class, 'accept');
@@ -21,6 +22,8 @@ Route::get('/getseller', 'pages/seller');
 // Работа с товарами
 Route::get('/create/product', '/pages/products/create');
 Route::post('/action/create/product', ProductController::class, 'store');
+Route::get('/products/profile/{id}', '/pages/products/myproducts', [ProductController::class, 'seller']);
+Route::get('/product/{id}', '/pages/products/product', [ProductController::class, 'show']);
 // Работа с товарами
 
 Route::get('/login', 'login');

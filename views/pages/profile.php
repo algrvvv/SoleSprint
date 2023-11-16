@@ -29,7 +29,7 @@ $owner_data = $s->get_session('values')['owner_data'] ?? null;
                                 if ($owner_data['status'] == 'verified') {
                         ?>
                                     <div class="d-flex justify-content-center mb-2">
-                                        <a href="#" type="button" class="btn btn-primary">Мои товары</a>
+                                        <a href="/products/profile/<?= $user_id ?>" type="button" class="btn btn-primary">Мои товары</a>
                                         <a href="/create/product" type="button" class="btn btn-outline-primary ms-1">Добавить товар</a>
                                     </div>
                                 <?php

@@ -14,13 +14,6 @@ $s = new UserSession();
 echo "<pre>";
 print_r($s->get_session());
 echo "</pre>";
-/**
- * 
- */
-
-$auth = new Auth();
-
-var_dump($auth->getUser());
 ?>
 
 <h1>404</h1>
