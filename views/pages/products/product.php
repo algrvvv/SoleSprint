@@ -1,10 +1,13 @@
 <?php
 
+use App\Services\Auth\Auth;
+use App\Services\Session\Guest;
 use App\Services\Views\View;
 use App\Services\Session\Session;
 
 View::render_header('header', 'Интернет магазин');
 $s = new Session();
+$auth = new Auth();
 $product = $s->get_session('product');
 
 $tegs = explode(',', $product['tegs']);
@@ -18,6 +21,11 @@ $tegs = explode(',', $product['tegs']);
         padding: 6px;
         margin-right: 4px;
         border-radius: 12px;
+    }
+
+    .tag:hover {
+        background-color: #764eef4d;
+        cursor: pointer;
     }
 </style>
 
@@ -33,26 +41,56 @@ $tegs = explode(',', $product['tegs']);
                 <h3 class="mt-1"><?= $product['name'] ?></h3>
                 <div class="d-flex">
                     <?php
-                        foreach ($tegs as $teg) {
+                    foreach ($tegs as $teg) {
                     ?>
-                    <p class="tag">#<?= $teg ?></p>
+                        <p class="tag">#<?= $teg ?></p>
                     <?php
-                        }
+                    }
                     ?>
                 </div>
                 <p class="card-text"><?= $product['description'] ?></p>
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-light">
-                            Добавить в корзину
-                            <svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
+                    <?php
+                    if (!Guest::guest()) {
+                    ?>
+                        <div class="btn-group">
+                            <?php
+                            $favs = $auth->user()['favorites'] ?? 0;
+                            if (in_array($product['id'], str_split($favs))) {
+                            ?>
+                                <button onclick="add('svg<?= $product['id'] ?>', 'true')" type="button" class="btn btn-sm btn-light">
+                                    В корзине
+                                    <svg id='svg<?= $product['id'] ?>' width="16px" height="16px" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            <?php
+                            } else {
+                            ?>
+                                <button onclick="add('svg<?= $product['id'] ?>', 'false')" type="button" class="btn btn-sm btn-light">
+                                    Добавить в корзину
+                                    <svg id='svg<?= $product['id'] ?>' width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 6.00019C10.2006 3.90317 7.19377 3.2551 4.93923 5.17534C2.68468 7.09558 2.36727 10.3061 4.13778 12.5772C5.60984 14.4654 10.0648 18.4479 11.5249 19.7369C11.6882 19.8811 11.7699 19.9532 11.8652 19.9815C11.9483 20.0062 12.0393 20.0062 12.1225 19.9815C12.2178 19.9532 12.2994 19.8811 12.4628 19.7369C13.9229 18.4479 18.3778 14.4654 19.8499 12.5772C21.6204 10.3061 21.3417 7.07538 19.0484 5.17534C16.7551 3.2753 13.7994 3.90317 12 6.00019Z" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </button>
+                            <?php
+                            }
+                            ?>
+                        </div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="btn-group">
+                            <p>Войдите в аккаунт, чтобы добавить товар в корзину</p>
+                        </div>
+                    <?php
+                    }
+                    ?>
                     <span class="fw-bolder text-decoration-underline"><?= $product['price'] ?> руб</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<p class="test"></p>

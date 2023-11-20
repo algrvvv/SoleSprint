@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\Action\AppsController;
+use App\Controllers\Action\CartController;
 use App\Controllers\Action\ProductController;
 use App\Controllers\Action\SellerController;
 use App\Controllers\Action\ShopController;
@@ -26,6 +27,8 @@ Route::get('/products/profile/{id}', '/pages/products/myproducts', [ProductContr
 Route::get('/product/{id}', '/pages/products/product', [ProductController::class, 'show']);
 // Работа с товарами
 
+Route::get('/cart', 'pages/cart', [CartController::class, 'index']);
+
 Route::get('/login', 'login');
 Route::get('/register', 'register');
 
@@ -41,7 +44,8 @@ Route::middleware([
     '/dashboard' => 'admin',
     '/getseller' => 'auth',
     '/applications' => 'auth',
-    '/create/product' => 'owner'
+    '/create/product' => 'owner',
+    '/cart' => 'auth'
 ]);
 
 Route::fallback();

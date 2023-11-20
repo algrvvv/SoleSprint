@@ -80,7 +80,7 @@ class DBW
      * @param string | int $value
      * @param string $operator
      */
-    public function where(string $field, string | int $value, string $operator = "=",)
+    public function where(string $field, string | array $value, string $operator = "=", string $separator = 'AND')
     {
         /**
          * С следующих обновлениях данная функция получит обновление функционала
@@ -91,7 +91,28 @@ class DBW
             } else {
                 $field = "`$field`";
             }
-            $sql = $this->query . " WHERE $field $operator '$value'";
+
+            switch ($separator) {
+                case "AND":
+                    if (str_contains($this->query, 'WHERE')) {
+                        $sql = $this->query . " AND $field $operator '$value'";
+                    } else {
+                        $sql = $this->query . " WHERE $field $operator '$value'";
+                    }
+                    break;
+                case "OR":
+                    if (str_contains($this->query, 'WHERE')) {
+                        $sql = $this->query . " OR $field $operator '$value'";
+                    } else {
+                        $sql = $this->query . " WHERE $field $operator '$value'";
+                    }
+                case "IN":
+                    if (str_contains($this->query, 'WHERE')) {
+                        $sql = $this->query . " AND $field IN ($value)";
+                    } else {
+                        $sql = $this->query . " WHERE $field IN ($value)";
+                    }
+            }
             $this->setQuery($sql);
             return $this;
         } else {
@@ -189,7 +210,6 @@ class DBW
                     $cond_amount++;
                 }
             }
-
             try {
                 $this->connection->query($query);
             } catch (\Exception $e) {
