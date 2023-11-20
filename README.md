@@ -1,4 +1,4 @@
 # SoleSprint
-An attempt to create a semblance of a framework in pure php without using third-party packages. Using composer autoloading only
 
-After a full-fledged "release", a template for working with this "miracle" will be presented
+Простенький проект интернет магазина, который построен на собственном небольшом фреймворке (здесь будет ссылка) FirstSpint, который написан полностью на чистом php, используя лишь автозагрузку классов.
+Проект нужен для проверки и ращличных тестов самомго "фреймворка".
